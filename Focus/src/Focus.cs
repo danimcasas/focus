@@ -6,8 +6,6 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Focus")]
 [assembly: AssemblyProduct("Focus")]
 [assembly: AssemblyDescription("Temporizador local de concentración, estudio y descanso")]
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
 
 namespace FocusDesktop
 {
@@ -20,7 +18,7 @@ namespace FocusDesktop
         private Label modeTitle;
         private Label clockLabel;
         private Label statusLabel;
-        private Panel modePanel;
+        private TableLayoutPanel modePanel;
         private long remainingMilliseconds;
         private DateTime deadlineUtc;
         private int selectedMode;
@@ -60,12 +58,24 @@ namespace FocusDesktop
             TableLayoutPanel shell = new TableLayoutPanel();
             shell.Dock = DockStyle.Fill;
             shell.ColumnCount = 1;
-            shell.RowCount = 2;
+            shell.RowCount = 3;
             shell.Padding = new Padding(22);
             shell.BackColor = BackgroundColor;
             shell.RowStyles.Add(new RowStyle(SizeType.Absolute, 56F));
             shell.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            shell.RowStyles.Add(new RowStyle(SizeType.Absolute, 48F));
             Controls.Add(shell);
+
+            Label creatorFooter = new Label();
+            creatorFooter.Name = "creatorFooter";
+            creatorFooter.Dock = DockStyle.Fill;
+            creatorFooter.TextAlign = ContentAlignment.MiddleCenter;
+            creatorFooter.ForeColor = MutedTextColor;
+            creatorFooter.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            creatorFooter.Text = "danimcasas.com curso codex 2026" + Environment.NewLine
+                + "Versión " + Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+            creatorFooter.AccessibleName = "Creadores y versión de Focus";
+            shell.Controls.Add(creatorFooter, 0, 2);
 
             Panel header = new Panel();
             header.Dock = DockStyle.Fill;
@@ -136,10 +146,15 @@ namespace FocusDesktop
             titlePanel.Controls.Add(modeTitle, 0, 1);
             layout.Controls.Add(titlePanel, 0, 0);
 
-            modePanel = new Panel();
+            modePanel = new TableLayoutPanel();
             modePanel.Dock = DockStyle.Fill;
             modePanel.BackColor = CardColor;
             modePanel.Padding = new Padding(0, 5, 0, 5);
+            modePanel.ColumnCount = 3;
+            modePanel.RowCount = 1;
+            modePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333F));
+            modePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.333F));
+            modePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.334F));
             string[] modeAccessibleNames = { "Modo Concentración, 25 minutos", "Modo Estudio, 50 minutos", "Modo Descanso, 10 minutos" };
             for (int i = 0; i < modeNames.Length; i++)
             {
@@ -150,9 +165,8 @@ namespace FocusDesktop
                 button.Margin = new Padding(4, 0, 4, 0);
                 button.Click += delegate { SelectMode(modeIndex); };
                 modeButtons[i] = button;
-                modePanel.Controls.Add(button);
+                modePanel.Controls.Add(button, i, 0);
             }
-            modePanel.Resize += delegate { ResizeModeButtons(); };
             layout.Controls.Add(modePanel, 0, 1);
 
             TableLayoutPanel timerPanel = new TableLayoutPanel();
@@ -234,16 +248,6 @@ namespace FocusDesktop
             button.Cursor = Cursors.Hand;
             button.Margin = new Padding(7, 7, 7, 7);
             return button;
-        }
-
-        private void ResizeModeButtons()
-        {
-            if (modePanel == null || modeButtons[0] == null) return;
-            int width = Math.Max(100, (modePanel.ClientSize.Width - 30) / 3);
-            for (int i = 0; i < modeButtons.Length; i++)
-            {
-                if (modeButtons[i] != null) modeButtons[i].Width = width;
-            }
         }
 
         private void ResizeClockFont()
