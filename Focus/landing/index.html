@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111a2b">
+  <meta name="description" content="Focus es un temporizador portable para Windows 11 con modos de concentración, estudio y descanso. Sin instalación ni conexión a internet.">
+  <title>Focus · Temporizador para Windows 11</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111a2b;
+      --panel: #19243a;
+      --panel-light: #202d46;
+      --text: #f4f6fb;
+      --muted: #aab5c8;
+      --accent: #a9f0d1;
+      --accent-strong: #6de0b2;
+      --line: rgba(215, 227, 247, .13);
+      --max: 1120px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 72% 0%, rgba(95, 131, 186, .15), transparent 35rem),
+        var(--bg);
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    .skip-link {
+      position: absolute;
+      top: -5rem;
+      left: 1rem;
+      z-index: 5;
+      padding: .75rem 1rem;
+      color: #10241d;
+      background: var(--accent);
+      border-radius: .7rem;
+    }
+    .skip-link:focus { top: 1rem; }
+    .shell { width: min(calc(100% - 40px), var(--max)); margin-inline: auto; }
+    .site-header {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: .08em;
+    }
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid rgba(169, 240, 209, .3);
+      border-radius: 13px;
+      color: var(--accent);
+      background: rgba(169, 240, 209, .08);
+      font-size: 19px;
+    }
+    .nav { display: flex; align-items: center; gap: 26px; }
+    .nav a {
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .nav a:hover, .nav a:focus-visible { color: var(--text); }
+    .nav .nav-download { color: var(--accent); font-weight: 700; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, .9fr);
+      align-items: center;
+      gap: clamp(40px, 8vw, 100px);
+      padding-block: clamp(72px, 10vw, 132px);
+    }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 620px;
+      margin-bottom: 20px;
+      font-size: clamp(42px, 6.2vw, 72px);
+      font-weight: 650;
+      letter-spacing: -.06em;
+      line-height: 1.04;
+    }
+    .lead {
+      max-width: 570px;
+      margin-bottom: 28px;
+      color: #c1cada;
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.65;
+    }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .button {
+      display: inline-flex;
+      min-height: 50px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--text);
+      background: var(--panel-light);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .18s ease, transform .18s ease;
+    }
+    .button:hover { background: #293955; transform: translateY(-1px); }
+    .button.primary {
+      border-color: transparent;
+      color: #10241d;
+      background: var(--accent);
+    }
+    .button.primary:hover { background: var(--accent-strong); }
+    .release-note { margin: 15px 0 0; color: var(--muted); font-size: 13px; }
+    .download-note { max-width: 310px; margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .preview {
+      margin: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: rgba(25, 36, 58, .72);
+      box-shadow: 0 34px 95px rgba(0, 0, 0, .28);
+    }
+    .preview-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 1px 5px 16px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+    .preview-brand { color: var(--text); font-weight: 750; letter-spacing: .1em; }
+    .preview-card {
+      padding: clamp(24px, 4vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: 23px;
+      background: linear-gradient(150deg, rgba(32, 45, 70, .98), rgba(25, 36, 58, .98));
+    }
+    .preview-kicker {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .preview h2 { margin: 0; font-size: 22px; text-align: center; }
+    .preview-modes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin: 24px 0 18px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(8, 14, 25, .28);
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+    .preview-modes span { padding: 9px 5px; border-radius: 10px; }
+    .preview-modes .selected {
+      color: var(--accent);
+      background: rgba(169, 240, 209, .1);
+    }
+    .clock {
+      display: grid;
+      width: min(100%, 290px);
+      aspect-ratio: 1;
+      place-items: center;
+      margin-inline: auto;
+      border: 1px solid rgba(169, 240, 209, .14);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(10, 17, 29, .25) 57%, transparent 58%);
+    }
+    .clock strong {
+      display: block;
+      font-size: clamp(64px, 9vw, 90px);
+      font-weight: 550;
+      letter-spacing: -.075em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .clock span { display: block; margin-top: 10px; color: var(--muted); font-size: 12px; text-align: center; }
+    .preview-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .preview-controls span {
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .preview-controls span:first-child {
+      border-color: transparent;
+      color: #10241d;
+      background: var(--accent);
+      font-weight: 750;
+    }
+    figcaption { padding: 14px 8px 0; color: var(--muted); font-size: 12px; text-align: center; }
+    .section { padding-block: clamp(64px, 8vw, 100px); border-top: 1px solid var(--line); }
+    .section-heading { max-width: 680px; margin-bottom: 34px; }
+    .section-heading h2 {
+      margin-bottom: 12px;
+      font-size: clamp(30px, 4.4vw, 46px);
+      font-weight: 620;
+      letter-spacing: -.045em;
+      line-height: 1.12;
+    }
+    .section-heading p { margin-bottom: 0; color: var(--muted); font-size: 17px; }
+    .mode-grid, .steps, .facts { display: grid; gap: 16px; }
+    .mode-grid { grid-template-columns: repeat(3, 1fr); }
+    .version-grid { grid-template-columns: repeat(2, 1fr); }
+    .mode-card {
+      min-height: 210px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(32, 45, 70, .74), rgba(25, 36, 58, .74));
+    }
+    .mode-time { margin: 0 0 20px; color: var(--accent); font-size: 14px; font-weight: 700; }
+    .mode-card h3 { margin-bottom: 8px; font-size: 21px; }
+    .mode-card p:last-child { margin-bottom: 0; color: var(--muted); }
+    .version-card { display: flex; min-height: 270px; flex-direction: column; align-items: flex-start; }
+    .version-card .mode-time { margin-bottom: 12px; }
+    .version-card p { color: var(--muted); }
+    .version-card .button { margin-top: auto; }
+    .steps { grid-template-columns: repeat(3, 1fr); counter-reset: step; }
+    .step {
+      position: relative;
+      padding: 24px 22px 24px 60px;
+      border-top: 1px solid rgba(169, 240, 209, .32);
+      counter-increment: step;
+    }
+    .step::before {
+      position: absolute;
+      top: 23px;
+      left: 4px;
+      color: var(--accent);
+      content: "0" counter(step);
+      font-size: 13px;
+      font-weight: 750;
+      letter-spacing: .06em;
+    }
+    .step h3 { margin-bottom: 8px; font-size: 18px; }
+    .step p { margin-bottom: 0; color: var(--muted); font-size: 15px; }
+    .use-card {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 42px;
+      padding: clamp(28px, 5vw, 52px);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel);
+    }
+    .use-card h2 { max-width: 380px; margin: 0; font-size: clamp(28px, 3.5vw, 40px); letter-spacing: -.04em; line-height: 1.15; }
+    .facts { grid-template-columns: 1fr 1fr; gap: 18px 28px; margin: 0; padding: 0; list-style: none; }
+    .facts li { padding-top: 15px; border-top: 1px solid var(--line); color: #c1cada; }
+    .facts strong { display: block; margin-bottom: 4px; color: var(--text); }
+    .faq-list { max-width: 820px; border-top: 1px solid var(--line); }
+    details { padding: 20px 0; border-bottom: 1px solid var(--line); }
+    summary { color: var(--text); font-weight: 700; cursor: pointer; }
+    details p { max-width: 720px; margin: 12px 0 0; color: var(--muted); }
+    .download {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      padding: clamp(28px, 5vw, 52px);
+      border: 1px solid rgba(169, 240, 209, .25);
+      border-radius: 27px;
+      background: linear-gradient(125deg, rgba(169, 240, 209, .1), rgba(32, 45, 70, .78));
+    }
+    .download h2 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 40px); letter-spacing: -.045em; }
+    .download p { margin: 0; color: var(--muted); }
+    .download-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; flex: 0 0 auto; }
+    .checksum { color: var(--muted); font-size: 12px; }
+    .site-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-block: 28px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .site-footer p { margin: 0; }
+    :focus-visible { outline: 3px solid #e0fff0; outline-offset: 4px; }
+    @media (max-width: 820px) {
+      .hero { grid-template-columns: 1fr; gap: 42px; }
+      .preview { max-width: 560px; width: 100%; margin-inline: auto; }
+      .mode-grid, .steps { grid-template-columns: 1fr; }
+      .version-grid { grid-template-columns: 1fr; }
+      .mode-card { min-height: 0; }
+      .use-card { grid-template-columns: 1fr; gap: 26px; }
+    }
+    @media (max-width: 560px) {
+      .shell { width: min(calc(100% - 28px), var(--max)); }
+      .site-header { min-height: 72px; }
+      .nav { gap: 14px; }
+      .nav a { font-size: 12px; }
+      .nav a:first-child { display: none; }
+      .hero { padding-block: 58px; }
+      h1 { font-size: clamp(40px, 13vw, 58px); }
+      .preview { padding: 12px; border-radius: 24px; }
+      .preview-card { padding: 22px 14px; }
+      .preview-modes { font-size: 10px; }
+      .preview-controls span { padding-inline: 10px; }
+      .facts { grid-template-columns: 1fr; }
+      .download { align-items: flex-start; flex-direction: column; }
+      .site-footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <div class="shell">
+    <header class="site-header">
+      <a class="brand" href="#inicio" aria-label="Focus, inicio">
+        <span class="brand-mark" aria-hidden="true">◷</span>
+        <span>FOCUS</span>
+      </a>
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="#modos">Los modos</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a class="nav-download" href="#descargar">Descargar</a>
+      </nav>
+    </header>
+
+    <main id="contenido">
+      <section class="hero" id="inicio" aria-labelledby="hero-title">
+        <div>
+        <p class="eyebrow">App de escritorio para Windows 11</p>
+          <h1 id="hero-title">Haz una cosa cada vez.</h1>
+          <p class="lead">Elige un bloque de concentración, estudio o descanso. Focus muestra el tiempo y te permite iniciar, pausar o reiniciar cuando lo necesites.</p>
+          <div class="actions">
+            <a class="button primary" href="https://drive.google.com/file/d/1g9_8SY8WLC7rnRP1Fu17lWxnuFvL3HFC/view?usp=drivesdk">Ver paquete en Google Drive</a>
+            <a class="button" href="#versiones">Ver las dos versiones</a>
+          </div>
+          <p class="release-note">Aplicación nativa · Requiere .NET Framework 4.x.</p>
+          <p class="download-note">Acceso restringido; descarga pública pendiente.</p>
+        </div>
+
+        <figure class="preview" aria-label="Vista ilustrativa del temporizador Focus">
+          <div class="preview-top">
+            <span class="preview-brand">◷ FOCUS</span>
+            <span>Tu tiempo, a tu ritmo</span>
+          </div>
+          <div class="preview-card">
+            <p class="preview-kicker">Un paso cada vez</p>
+            <h2>Concentración</h2>
+            <div class="preview-modes" aria-label="Modos disponibles">
+              <span class="selected">Concentración</span>
+              <span>Estudio</span>
+              <span>Descanso</span>
+            </div>
+            <div class="clock" aria-label="Veinticinco minutos">
+              <div>
+                <strong>25:00</strong>
+                <span>Listo para empezar</span>
+              </div>
+            </div>
+            <div class="preview-controls" aria-hidden="true">
+              <span>Iniciar</span>
+              <span>Pausar</span>
+              <span>Reiniciar</span>
+            </div>
+          </div>
+          <figcaption>Una pantalla con el modo elegido, el tiempo y los controles de la sesión.</figcaption>
+        </figure>
+      </section>
+
+      <section class="section" id="modos" aria-labelledby="modes-title">
+        <div class="section-heading">
+          <p class="eyebrow">Tres duraciones</p>
+          <h2 id="modes-title">Elige el tiempo que encaja con lo que vas a hacer.</h2>
+          <p>Los modos tienen una duración fija. Puedes cambiar de uno a otro cuando termine la sesión o cuando quieras empezar de nuevo.</p>
+        </div>
+        <div class="mode-grid">
+          <article class="mode-card">
+            <p class="mode-time">25 minutos</p>
+            <h3>Concentración</h3>
+            <p>Un bloque breve para dedicarte a una tarea concreta.</p>
+          </article>
+          <article class="mode-card">
+            <p class="mode-time">50 minutos</p>
+            <h3>Estudio</h3>
+            <p>Un intervalo largo para leer, practicar o avanzar en una materia.</p>
+          </article>
+          <article class="mode-card">
+            <p class="mode-time">10 minutos</p>
+            <h3>Descanso</h3>
+            <p>Una pausa corta antes de elegir el siguiente bloque.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="como-funciona" aria-labelledby="steps-title">
+        <div class="section-heading">
+          <p class="eyebrow">Cómo se usa</p>
+          <h2 id="steps-title">El temporizador hace lo justo.</h2>
+          <p>Escoge una duración y controla la sesión desde la misma pantalla.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <h3>Elige un modo</h3>
+            <p>Concentración, estudio o descanso. Focus carga la duración correspondiente.</p>
+          </article>
+          <article class="step">
+            <h3>Inicia o pausa</h3>
+            <p>Empieza cuando estés listo. Puedes pausar y reanudar con el tiempo restante.</p>
+          </article>
+          <article class="step">
+            <h3>Decide el siguiente paso</h3>
+            <p>Al llegar a cero, la sesión termina. Tú eliges si descansas, cambias de modo o reinicias.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="versiones" aria-labelledby="versions-title">
+        <div class="section-heading">
+          <p class="eyebrow">Dos formatos</p>
+          <h2 id="versions-title">Elige cómo abrir Focus.</h2>
+          <p>La app de escritorio funciona en su propia ventana. La versión HTML se abre con el navegador y no necesita instalación.</p>
+        </div>
+        <div class="mode-grid version-grid">
+          <article class="mode-card version-card">
+            <p class="mode-time">EXE · Versión 1.0.1</p>
+            <h3>App de escritorio</h3>
+            <p>Extrae el ZIP y abre Focus.exe. Funciona sin servidor y no realiza conexiones de red. Requiere .NET Framework 4.x; el paquete no incluye el runtime ni un instalador. También incluye Focus.cs como fuente.</p>
+            <p class="download-note">Acceso restringido; descarga pública pendiente.</p>
+            <a class="button" href="https://drive.google.com/file/d/1g9_8SY8WLC7rnRP1Fu17lWxnuFvL3HFC/view?usp=drivesdk">Ver paquete en Google Drive</a>
+          </article>
+          <article class="mode-card version-card">
+            <p class="mode-time">HTML · Versión 1.0.0</p>
+            <h3>Temporizador portable</h3>
+            <p>Extrae el ZIP y abre index.html con el navegador de Windows. No requiere instalación ni conexión a internet. La sesión no se guarda al cerrar o recargar.</p>
+            <a class="button" href="../release/Focus-Windows11-1.0.0.zip" download>Descargar versión HTML</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="faq-title">
+        <div class="section-heading">
+          <p class="eyebrow">Dudas habituales</p>
+          <h2 id="faq-title">Antes de descargar</h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>¿Los modos cambian automáticamente?</summary>
+            <p>No. Al llegar a cero, el temporizador se detiene. Elige manualmente si quieres iniciar otro modo.</p>
+          </details>
+          <details>
+            <summary>¿Puedo ajustar la duración?</summary>
+            <p>Esta versión incluye tres tiempos fijos: 25 minutos para Concentración, 50 para Estudio y 10 para Descanso.</p>
+          </details>
+          <details>
+            <summary>¿Focus guarda mi sesión?</summary>
+            <p>No. Al cerrar la app o la página, la sesión termina. Cuando vuelvas a abrir Focus, empieza en Concentración, con 25 minutos.</p>
+          </details>
+          <details>
+            <summary>¿Qué necesita la versión de escritorio?</summary>
+            <p>La versión EXE requiere .NET Framework 4.x. El ZIP no incluye ese runtime ni un instalador.</p>
+          </details>
+          <details>
+            <summary>¿El ejecutable está firmado?</summary>
+            <p>No tiene firma Authenticode. El paquete ZIP incluye un archivo SHA-256 para comprobar su integridad.</p>
+          </details>
+          <details>
+            <summary>¿Cómo abro el paquete?</summary>
+            <p>Extrae el ZIP conservando su carpeta y abre index.html con el navegador predeterminado de Windows.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="section" id="descargar" aria-labelledby="download-title">
+        <div class="download">
+          <div>
+            <p class="eyebrow">Focus para Windows 11</p>
+            <h2 id="download-title">Elige tu versión de Focus.</h2>
+            <p>Descarga la app de escritorio 1.0.1 o el temporizador HTML portable 1.0.0.</p>
+          </div>
+          <div class="download-actions">
+            <a class="button primary" href="https://drive.google.com/file/d/1g9_8SY8WLC7rnRP1Fu17lWxnuFvL3HFC/view?usp=drivesdk">Ver paquete en Google Drive</a>
+            <p class="download-note">Acceso restringido; descarga pública pendiente. Requiere .NET Framework 4.x; el paquete no incluye runtime. El EXE no tiene firma Authenticode.</p>
+            <a class="checksum" href="../release/Focus-Windows11-EXE-1.0.1.zip.sha256">Ver SHA-256 del ZIP EXE</a>
+            <a class="checksum" href="../release/Focus-Windows11-1.0.0.zip.sha256">Ver SHA-256 del ZIP HTML</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>FOCUS · Temporizador para Windows 11</p>
+      <p>App EXE 1.0.1 · HTML 1.0.0</p>
+    </footer>
+  </div>
+</body>
+</html>
