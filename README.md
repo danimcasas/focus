@@ -7,7 +7,8 @@ Creadores: **danimcasas.com curso codex 2026**.
 
 ## Descargar y usar
 
-Las entregas numeradas se distribuyen en GitHub Releases. Extrae el paquete
+La [versión 1.0.2](https://github.com/danimcasas/focus/releases/tag/v1.0.2)
+está disponible en GitHub Releases. Extrae el paquete
 `Focus-Windows11-EXE-X.Y.Z.zip` y abre `Focus.exe`. El ejecutable requiere
 .NET Framework 4.x y no tiene firma digital. El paquete no instala un runtime.
 Comprueba el archivo `.sha256` para verificar el ZIP.

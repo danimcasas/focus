@@ -1,6 +1,6 @@
 # Focus — copy de la landing
 
-**Versión del borrador:** 0.3  
+**Versión del borrador:** 0.4\
 **Estado:** preparado en local; no publicado.  
 **Producto que presenta:** Focus para Windows 11, en dos formatos.
 
@@ -21,15 +21,15 @@ Haz una cosa cada vez.
 Elige un bloque de concentración, estudio o descanso. Focus muestra el tiempo y te permite iniciar, pausar o reiniciar cuando lo necesites.
 
 **CTA principal**  
-Ver paquete en Google Drive  
-https://drive.google.com/file/d/1g9_8SY8WLC7rnRP1Fu17lWxnuFvL3HFC/view?usp=drivesdk
+Descargar Focus 1.0.2\
+https://github.com/danimcasas/focus/releases/download/v1.0.2/Focus-Windows11-EXE-1.0.2.zip
 
 **CTA secundario**  
 Ver las dos versiones
 
 **Microcopy**  
 Aplicación nativa · Requiere .NET Framework 4.x.  
-Acceso restringido; descarga pública pendiente.
+Descarga desde GitHub · Creadores: danimcasas.com curso codex 2026.
 
 ## Los tres modos
 
@@ -50,8 +50,10 @@ Una pausa corta antes de elegir el siguiente bloque.
 
 ## Elige cómo abrir Focus
 
-**App de escritorio · EXE 1.0.1**  
-El paquete está en Google Drive: [Ver paquete en Google Drive](https://drive.google.com/file/d/1g9_8SY8WLC7rnRP1Fu17lWxnuFvL3HFC/view?usp=drivesdk). El acceso está restringido y la descarga pública sigue pendiente. Extrae el ZIP y abre Focus.exe. Funciona sin servidor y no realiza conexiones de red. Requiere .NET Framework 4.x; el paquete no incluye el runtime ni un instalador. El ZIP también incluye Focus.cs como fuente.
+**App de escritorio · EXE 1.0.2**\
+El paquete está disponible en [GitHub Releases](https://github.com/danimcasas/focus/releases/tag/v1.0.2). Extrae el ZIP y abre Focus.exe. Funciona sin servidor y no realiza conexiones de red. Requiere .NET Framework 4.x; el paquete no incluye el runtime ni un instalador. Incluye los fuentes de la compilación y una alternativa web local. El pie muestra «danimcasas.com curso codex 2026» y la versión.
+
+La [versión anterior 1.0.1 en Drive](https://drive.google.com/file/d/1g9_8SY8WLC7rnRP1Fu17lWxnuFvL3HFC/view?usp=drivesdk) conserva el acceso restringido.
 
 **Temporizador portable · HTML 1.0.0**  
 Extrae el ZIP y abre index.html con el navegador predeterminado de Windows. No requiere instalación ni conexión a internet. La sesión no se guarda al cerrar o recargar.
@@ -83,7 +85,7 @@ Focus es un temporizador para Windows 11 con modos de concentración, estudio y 
 
 ## Criterios de contenido y publicación
 
-- El CTA EXE apunta al paquete de Google Drive, con acceso restringido; no afirma que la descarga pública esté disponible. La alternativa HTML conserva su ruta relativa al ZIP local.
-- La subida comunicada indica que el SHA-256 local del ZIP EXE coincide con el sidecar de Drive. El tamaño informado es 11.213 bytes y el ZIP incluye Focus.exe y documentación.
-- El QA de la versión EXE informa que no se completó una revisión visual interactiva. Esta landing también queda pendiente de revisión visual porque el entorno bloqueó el acceso al servidor de vista previa local.
+- El CTA EXE apunta al ZIP 1.0.2 de GitHub Releases. Su descarga pública se ha comprobado sin credenciales y el SHA-256 coincide con el paquete local y el digest remoto. La alternativa HTML histórica conserva su ruta relativa al ZIP local.
+- El enlace de Drive corresponde a la versión anterior 1.0.1 y se identifica como restringido.
+- El QA 1.0.2 incluye pruebas funcionales y revisión de imágenes WinForms a tamaño normal y mínimo. La revisión visual de la web y de esta landing en navegador sigue pendiente.
 - No se añaden precio, licencia, testimonios, cifras de productividad, personalización del tiempo ni cambios automáticos de modo: la carpeta no documenta esas capacidades.
